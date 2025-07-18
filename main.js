@@ -189,7 +189,7 @@ function printNode(nodes) {
                             current.classList.remove("highlight")
                         }
 
-                        item.classList.toggle("highlight")
+                        item.classList.add("highlight")
                     }
                 })
             }
