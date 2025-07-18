@@ -50,9 +50,9 @@ const tree = [
                 type: "folder",
                 name: "components",
                 children: [
-                    { type: "image", name: "img-background.jpg" },
-                    { type: "image", name: "img-thumbnail.jpg" },
-                    { type: "image", name: "img-logo.jpg" },
+                    { type: "file", name: "img-background.jpg" },
+                    { type: "file", name: "img-thumbnail.jpg" },
+                    { type: "file", name: "img-logo.jpg" },
                 ],
             },
         ],
@@ -65,9 +65,9 @@ const tree = [
                 type: "folder",
                 name: "svg",
                 children: [
-                    { type: "img", name: "left-arrow.svg" },
-                    { type: "img", name: "right-arrow.svg" },
-                    { type: "img", name: "bars-menu.svg" },
+                    { type: "file", name: "left-arrow.svg" },
+                    { type: "file", name: "right-arrow.svg" },
+                    { type: "file", name: "bars-menu.svg" },
                 ],
             },
         ],
@@ -184,6 +184,12 @@ function printNode(nodes) {
                     if (e.target) {
                         e.stopPropagation()
                         li.classList.toggle("open")
+                        const current = $(".item.highlight")
+                        if (current && current !== item) {
+                            current.classList.remove("highlight")
+                        }
+
+                        item.classList.toggle("highlight")
                     }
                 })
             }
@@ -198,12 +204,20 @@ function printNode(nodes) {
                 if (node.name.includes("js")) {
                     icon.classList.add("fa-brands", "fa-js")
                 }
+                if (
+                    node.name.includes(
+                        "jpg" || node.name.includes("svg") || node.name.includes("png")
+                    )
+                ) {
+                    icon.classList.add("fa-solid", "fa-image")
+                }
+                if (node.name.includes("md")) {
+                    icon.classList.add("fa-solid", "fa-circle-exclamation")
+                }
             }
             if (node.children && node.children.length > 0) {
                 const childrenUL = printNode(node.children)
                 li.appendChild(childrenUL)
-
-                span.addEventListener("click", (e) => {})
             }
             ul.appendChild(li)
         }
