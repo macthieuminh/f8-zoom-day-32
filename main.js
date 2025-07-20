@@ -151,6 +151,7 @@ const tree = [
     { type: "file", name: "register.html" },
     {},
 ]
+let targetItem = null
 
 function printNode(nodes) {
     const ul = document.createElement("ul")
@@ -166,6 +167,7 @@ function printNode(nodes) {
             const span = document.createElement("span")
 
             span.textContent = node.name
+
             item.appendChild(arrow)
             item.appendChild(icon)
             item.appendChild(span)
@@ -225,10 +227,69 @@ function printNode(nodes) {
     return ul
 }
 
+menuElement.addEventListener("contextmenu", (e) => {
+    event.preventDefault()
+
+    const item = e.target.closest(".item")
+    if (!item) return
+
+    targetItem = item
+
+    const menu = $(".context-menu")
+    const renameBtn = $(".renameBtn")
+    const deleteBtn = $(".deleteBtn")
+
+    menu.style.display = "block"
+    menu.style.left = `${Math.min(e.clientX, window.innerWidth - 150)}px`
+    menu.style.top = `${Math.min(e.clientY, window.innerHeight - 100)}px`
+
+    document.addEventListener("click", () => {
+        if (menu.style.display === "block") {
+            menu.style.display = "none"
+        }
+    })
+
+    renameBtn.onclick = () => {
+        const span = targetItem.querySelector("span")
+        const oldName = span.textContent
+        const input = document.createElement("input")
+
+        input.type = "text"
+        input.value = oldName
+
+        input.style.marginLeft = "12px"
+
+        input.style.outline = "none"
+        input.style.borderRadius = "6px"
+
+        input.style.width = "auto"
+        input.style.height = "18px"
+
+        targetItem.replaceChild(input, span)
+        input.focus()
+
+        input.addEventListener("blur", () => {
+            const newName = input.value.trim()
+            span.textContent = newName || oldName
+            targetItem.replaceChild(span, input)
+        })
+
+        input.addEventListener("keyup", (e) => {
+            if (e.key === "Enter" || e.keyCode === 13) {
+                const newName = input.value.trim()
+                span.textContent = newName || oldName
+                targetItem.replaceChild(span, input)
+            }
+        })
+
+        menu.style.display = "none"
+    }
+    deleteBtn.onclick = () => {
+        const li = targetItem.closest("li")
+        if (li) li.remove()
+        menu.style.display = "none"
+    }
+})
+
 const menu = printNode(tree)
 menuElement.appendChild(menu)
-// const items = $$(".item")
-// items.forEach((element) => {
-//     element.classList.remove("hightligth")
-// })
-// e.target.classList.toggle("hightlight")
